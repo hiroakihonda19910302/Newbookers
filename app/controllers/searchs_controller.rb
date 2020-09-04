@@ -1,14 +1,35 @@
 class SearchsController < ApplicationController
+  before_action :authenticate_user!
 
-	def search
-		@range = params[:range]
-    	search = params[:search]
-    	word = params[:word]
+  def search
+    @model = params["search"]["model"]
+    @content = params["search"]["content"]
+    @method = params["search"]["method"]
+    @records = search_for(@model, @content, @method)
+  end
 
-		if @range == '1'
-    		@user = User.search(search, word)
-    	else
- 			@book = Book.search(search, word)
- 		end
-	end
+  private
+  def search_for(model, content, method)
+    if model == 'user'
+      if method == 'perfect'
+        User.where(name: content)
+      elsif method == 'forward'
+        User.where('name LIKE ?', content+'%')
+      elsif method == 'backward'
+        User.where('name LIKE ?', '%'+content)
+      else
+        User.where('name LIKE ?', '%'+content+'%')
+      end
+    elsif model == 'book'
+      if method == 'perfect'
+        Book.where(title: content)
+      elsif method == 'forward'
+        Book.where('title LIKE ?', content+'%')
+      elsif method == 'backward'
+        Book.where('title LIKE ?', '%'+content)
+      else
+        Book.where('title LIKE ?', '%'+content+'%')
+      end
+    end
+  end
 end
