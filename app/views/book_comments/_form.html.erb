@@ -1,4 +1,0 @@
-<%= form_with(model: [book, book_comment], url: book_book_comments_path(book)) do |f| %>
-	<%= f.text_area :comment, size: "90x5" %>
-	<%= f.submit "送信する", class: "btn-sm btn-primary" %>
-<% end %>
