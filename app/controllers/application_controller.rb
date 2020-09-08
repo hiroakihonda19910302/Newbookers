@@ -11,6 +11,14 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :email])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :email, :postal_code, :prefecture_code, :city, :street])
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:name]) # ログイン時にnameを使用
   end
+  def correct_user?(user)
+    if current_user.nil?
+      return false
+    else
+      user.id.equal?(current_user.id)
+    end
+  end 
 end
